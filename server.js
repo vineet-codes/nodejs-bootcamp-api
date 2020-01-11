@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const colors = require("colors");
 const connectDB = require("./config/db");
+const errorhandler = require("./middleware/error");
 
 //load configfile
 dotenv.config({ path: "./config/config.env" });
@@ -33,6 +34,9 @@ if (environment === "development") {
 
 // Mount routers on app
 app.use(`/api/${apiVersion}/bootcamps`, bootcamps);
+
+// if we use it above the mount it will not catch errors for the routes mounted after it
+app.use(errorhandler);
 
 //start the app server
 const server = app.listen(PORT, err => {
