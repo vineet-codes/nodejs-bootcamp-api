@@ -10,7 +10,7 @@ dotenv.config({ path: "./config/config.env" });
 // connect to the database
 connectDB();
 
-//Routers
+// Routers
 const bootcamps = require("./routes/bootcamps");
 
 // destructure environment variables
@@ -22,6 +22,9 @@ const {
 
 // Instantiate an express app
 const app = express();
+
+//middlewares
+app.use(express.json());
 
 // logging
 if (environment === "development") {
