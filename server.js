@@ -13,6 +13,7 @@ connectDB();
 
 // Routers
 const bootcamps = require("./routes/bootcamps");
+const courses = require("./routes/courses");
 
 // destructure environment variables
 const {
@@ -47,6 +48,7 @@ if (environment === "development") {
 
 // Mount routers on app
 app.use(`/api/${apiVersion}/bootcamps`, bootcamps);
+app.use(`/api/${apiVersion}/courses`, courses);
 
 // if we use it above the mount it will not catch errors for the routes mounted after it
 app.use(errorhandler);
