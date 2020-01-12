@@ -10,20 +10,50 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   console.log(req.query);
   let query;
 
+  const reqQuery = {
+    ...req.query
+  };
+
+  // Fields to exclude
+  // Loop over removeFields and delete then from reqQuery
+  const removeFields = ["select", "sort"];
+  removeFields.forEach(param => delete reqQuery[param]);
+  console.log(reqQuery);
+
   // mongoose advanced filtering
+  // create a query string
   // less than, less than equal to, greater than, greater than equal to, in
-  let queryStr = JSON.stringify(req.query);
+  let queryStr = JSON.stringify(reqQuery);
   queryStr = JSON.parse(
     queryStr.replace(/\b(gt|gte|lte|lt|in)\b/g, match => `$${match}`)
   );
-  console.log(queryStr);
+  // console.log(queryStr);
 
+  // Finding resources
   query = Bootcamp.find(queryStr);
+
+  // Select fields
+  if (req.query.select) {
+    const fields = req.query.select.split(",").join(" ");
+    query = query.select(fields);
+  }
+
+  // Sort: deault sort by createdAt
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(",").join(" ");
+    query = query.sort(sortBy);
+  } else {
+    query = query.sort("-createdAt");
+  }
+
+  // Executing query
   const bootcamps = await query;
 
-  res
-    .status(200)
-    .json({ success: true, count: bootcamps.length, data: bootcamps });
+  res.status(200).json({
+    success: true,
+    count: bootcamps.length,
+    data: bootcamps
+  });
 });
 
 // @desc    Get a bootcamp

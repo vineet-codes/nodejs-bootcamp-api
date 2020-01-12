@@ -96,7 +96,7 @@ const BootcampSchema = new mongoose.Schema({
   }
 });
 
-// PRE Bootcamp Schema  Hooks
+// Schema  Hooks: PRE Bootcamp
 
 // Create bootcamp slug from the name
 BootcampSchema.pre("save", function(next) {
