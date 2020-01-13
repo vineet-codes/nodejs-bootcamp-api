@@ -88,6 +88,7 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
 // @access  private
 exports.deleteCourse = asyncHandler(async (req, res, next) => {
   // console.log("Reached Here");
+  // TODO: Fix running and updating aggregare when a course is deleted
   const course = await Course.findById(req.params.id);
   if (!course) {
     return next(

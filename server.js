@@ -4,6 +4,7 @@ const path = require("path");
 const morgan = require("morgan");
 const colors = require("colors");
 const fileUpload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const errorhandler = require("./middleware/error");
 
@@ -16,6 +17,7 @@ connectDB();
 // Routers
 const bootcamps = require("./routes/bootcamps");
 const courses = require("./routes/courses");
+const auth = require("./routes/auth");
 
 // destructure environment variables
 const {
@@ -29,6 +31,9 @@ const app = express();
 
 //middlewares
 app.use(express.json());
+
+// cookie parser
+app.use(cookieParser());
 
 // logging
 if (environment === "development") {
@@ -56,6 +61,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // Mount routers on app
 app.use(`/api/${apiVersion}/bootcamps`, bootcamps);
 app.use(`/api/${apiVersion}/courses`, courses);
+app.use(`/api/${apiVersion}/auth`, auth);
 
 // if we use it above the mount it will not catch errors for the routes mounted after it
 app.use(errorhandler);
