@@ -97,14 +97,20 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/v1/courses/:id
 // @access  private
 exports.deleteCourse = asyncHandler(async (req, res, next) => {
+  // console.log("Reached Here");
   const course = await Course.findById(req.params.id);
   if (!course) {
-    return new ErrorResponse(`No course with id of ${req.params.id}`, 404);
+    return next(
+      new ErrorResponse(`No course with id of ${req.params.id}`, 404)
+    );
   }
 
-  // doing this way so that we can use middleware: otherwise use findByIdandDelete
-  await course.remove();
+  // console.log(course);
+  // // doing this way so that we can use middleware: otherwise use findByIdandDelete
+  // console.log(course.remove());
+  await course.remove(); //Course.remove({ _id: req.params.id });
 
+  // console.log("Reached Here");
   res.status(200).json({
     success: true,
     data: {}
