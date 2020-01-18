@@ -15,7 +15,7 @@ const errorHandler = (err, req, res, next) => {
 
   // Mongoose duplicate key
   if (err.code === 11000 && err.name === "MongoError") {
-    const message = "Duplicate field value";
+    const message = "Bootcamp Title has to be unique: Duplicate field value";
     error = new ErrorResponse(message, 400); // client sent wrong data, hence Bad Request
   }
 
