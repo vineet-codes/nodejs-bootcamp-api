@@ -1,6 +1,7 @@
 const User = require("./../models/User");
 const ErrorResponse = require("./../utils/errorResponse");
 const asyncHandler = require("./../middleware/async");
+const sendEmail = require("./../utils/sendEmail");
 
 // @desc    Register User
 // @route   POST /api/v1/auth/register
@@ -47,6 +48,61 @@ exports.login = asyncHandler(async (req, res, next) => {
   sendTokeResponse(user, 200, res);
 });
 
+// @desc    Get current logged in user
+// @route   GET /api/v1/auth/me
+// @access  private
+exports.getMe = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  res.status(200).json({ success: true, data: user });
+});
+
+// @desc    Forgot Password
+// @route   POST /api/v1/auth/forgotpassword
+// @access  Public
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  // check if user exists with the email that was provided in the body
+  if (!user) {
+    return next(
+      new ErrorResponse(`There is no user with email: ${req.body.email}`, 404)
+    );
+  }
+
+  // Get reset Token
+  const resetToken = user.getResetPasswordToken();
+
+  // update db with the reset token and time: they are being update in the user model method
+  await user.save({ validateBeforeSave: false });
+
+  // send and email with a link when user can update password
+
+  // create reset url
+  const resetURL = `${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/resetpassword/${resetToken}`;
+
+  const message = `You are recieving this email because you or someone else has requested the reset of the password. 
+                    Please make a PUT request to ${resetURL}`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Password reset token",
+      message
+    });
+    res.status(200).json({ success: true, data: "Email sent" });
+  } catch (error) {
+    console.log(error);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorResponse(`Email could not be sent`, 500));
+  }
+});
+
 // Get token from model, alos create cookie and send response
 const sendTokeResponse = (user, statusCode, res) => {
   // Create token
@@ -68,12 +124,3 @@ const sendTokeResponse = (user, statusCode, res) => {
     .cookie("token", token, options)
     .json({ success: true, token: token });
 };
-
-// @desc    Get current logged in user
-// @route   GET /api/v1/auth/me
-// @access  private
-exports.getMe = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
-
-  res.status(200).json({ success: true, data: user });
-});
