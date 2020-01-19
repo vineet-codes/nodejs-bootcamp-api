@@ -18,6 +18,7 @@ connectDB();
 const bootcamps = require("./routes/bootcamps");
 const courses = require("./routes/courses");
 const auth = require("./routes/auth");
+const users = require("./routes/users");
 
 // destructure environment variables
 const {
@@ -42,6 +43,7 @@ if (environment === "development") {
 
 // File Upload
 app.use(fileUpload());
+
 // Set static folder
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -49,6 +51,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(`/api/${apiVersion}/bootcamps`, bootcamps);
 app.use(`/api/${apiVersion}/courses`, courses);
 app.use(`/api/${apiVersion}/auth`, auth);
+app.use(`/api/${apiVersion}/users`, users);
 
 // if we use it above the mount it will not catch errors for the routes mounted after it
 app.use(errorhandler);
