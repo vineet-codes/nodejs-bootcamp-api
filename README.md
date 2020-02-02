@@ -2,6 +2,8 @@
 
 A simple directory backend api written in nodejs and express.([live api](https://www.vineetbootcamper.xyz))
 
+Extensive documentation with examples [here](https://documenter.getpostman.com/view/1216681/SWTD9HTM?version=latest)
+
 ### Usage 
 Rename config/config.env.env to config/config.env and update the values to your own credentials
 
