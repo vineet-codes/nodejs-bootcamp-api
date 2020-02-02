@@ -8,6 +8,14 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const errorhandler = require("./middleware/error");
 
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+var xss = require("xss-clean");
+const cors = require("cors");
+
+const rateLimit = require("express-rate-limit");
+const hpp = require("hpp");
+
 //load configfile
 dotenv.config({ path: "./config/config.env" });
 
@@ -31,8 +39,27 @@ const {
 // Instantiate an express app
 const app = express();
 
+// security: set security headers
+app.use(helmet());
+
+// prevent cross site scripting
+app.use(xss());
+
+// Rate limiting
+const limiter = rateLimit({ windowms: 10 * 60 * 1000, max: 100 });
+app.use(limiter);
+
+// prevent http param pollution
+app.use(hpp());
+
+// enable cors
+app.use(cors());
+
 //middlewares
 app.use(express.json());
+
+// To prevent nosql injection
+app.use(mongoSanitize());
 
 // cookie parser
 app.use(cookieParser());
