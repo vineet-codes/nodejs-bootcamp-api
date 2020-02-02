@@ -9,13 +9,13 @@ const errorHandler = (err, req, res, next) => {
 
   // Mongoose bad objectID
   if (err.name === "CastError") {
-    const message = `Bootcamp not found with id of ${err.value}`;
+    const message = `Resource not found with id of ${err.value}`;
     error = new ErrorResponse(message, 404);
   }
 
   // Mongoose duplicate key
   if (err.code === 11000 && err.name === "MongoError") {
-    const message = "Bootcamp Title has to be unique: Duplicate field value";
+    const message = "Duplicate field value";
     error = new ErrorResponse(message, 400); // client sent wrong data, hence Bad Request
   }
 

@@ -96,6 +96,7 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/auth/forgotpassword
 // @access  Public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  // probably we need to check what we are getting in the request body
   const user = await User.findOne({ email: req.body.email });
 
   // check if user exists with the email that was provided in the body

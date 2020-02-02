@@ -19,6 +19,7 @@ const bootcamps = require("./routes/bootcamps");
 const courses = require("./routes/courses");
 const auth = require("./routes/auth");
 const users = require("./routes/users");
+const reviews = require("./routes/reviews");
 
 // destructure environment variables
 const {
@@ -52,6 +53,7 @@ app.use(`/api/${apiVersion}/bootcamps`, bootcamps);
 app.use(`/api/${apiVersion}/courses`, courses);
 app.use(`/api/${apiVersion}/auth`, auth);
 app.use(`/api/${apiVersion}/users`, users);
+app.use(`/api/${apiVersion}/reviews`, reviews);
 
 // if we use it above the mount it will not catch errors for the routes mounted after it
 app.use(errorhandler);
